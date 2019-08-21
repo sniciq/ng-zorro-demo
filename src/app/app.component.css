@@ -9,6 +9,10 @@
   height: 100vh;
 }
 
+.app-body {
+  background: #eaeaea;
+}
+
 .menu-sidebar {
   position: relative;
   z-index: 10;
@@ -17,9 +21,9 @@
 }
 
 .header-trigger {
-  height: 64px;
-  padding: 20px 24px;
-  font-size: 20px;
+  height: 50px;
+  padding: 10px 24px;
+  font-size: 18px;
   cursor: pointer;
   transition: all .3s,padding 0s;
 }
@@ -60,21 +64,23 @@ nz-header {
   width: 100%;
   z-index: 2;
 }
-
+.ant-layout-header {
+  height: 50px;
+}
 .app-header {
   position: relative;
-  height: 64px;
+  height: 50px;
   padding: 0;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 }
 
 nz-content {
-  margin: 24px;
+  margin: 12px;
 }
 
 .inner-content {
-  padding: 24px;
+  padding: 12px;
   background: #fff;
   height: 100%;
 }

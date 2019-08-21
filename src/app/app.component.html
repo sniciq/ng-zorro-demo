@@ -6,48 +6,30 @@
             [(nzCollapsed)]="isCollapsed"
             [nzTrigger]="null">
     <div class="sidebar-logo">
-      <a href="https://ng.ant.design/" target="_blank">
-        <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
-        <h1>Ant Design Of Angular</h1>
+      <a routerLink="">
+        <img src="..//assets/img/logo.svg" alt="logo">
+        <h1>Angular Demo</h1>
       </a>
     </div>
     <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <!-- <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/welcome">Welcome</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Monitor</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Workplace</a>
-          </li>
-        </ul>
+      <li nz-menu-item>
+          <a routerLink=""><i nz-icon [nzType]="'dashboard'"></i>首页</a>
       </li>
-      <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a>Basic Form</a>
-          </li>
-        </ul>
-      </li> -->
-
       <ng-container *ngFor="let menu of menus">
-        <li *ngIf="menu.subMenus && menu.subMenus.length > 0" nz-submenu nzTitle="{{menu.name}}" nzIcon="dashboard">
+        <li *ngIf="menu.subMenus && menu.subMenus.length > 0" nz-submenu nzTitle="{{menu.name}}" nzIcon="form">
             <ul>
                 <li nz-menu-item nzMatchRouter *ngFor="let subMenu of menu.subMenus" >
-                    <a>{{subMenu.name}}</a>
+                    <a routerLink="{{subMenu.path}}">{{subMenu.name}}</a>
                   </li>
             </ul>
         </li>
         <li *ngIf="!menu.subMenus || menu.subMenus.length == 0" nz-menu-item nzMatchRouter nzIcon="dashboard">
-            <a>{{menu.name}}</a>
+            <a routerLink="{{menu.path}}">{{menu.name}}</a>
         </li>
       </ng-container>
     </ul>
   </nz-sider>
-  <nz-layout>
+  <nz-layout class="app-body">
     <nz-header>
       <div class="app-header">
         <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
