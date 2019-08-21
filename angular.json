@@ -69,7 +69,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ng-zorro-demo:build"
+            "browserTarget": "ng-zorro-demo:build",
+            "proxyConfig": "src/proxy.conf.js"
           },
           "configurations": {
             "production": {

@@ -12,7 +12,7 @@
       </a>
     </div>
     <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
+      <!-- <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
         <ul>
           <li nz-menu-item nzMatchRouter>
             <a routerLink="/welcome">Welcome</a>
@@ -31,7 +31,20 @@
             <a>Basic Form</a>
           </li>
         </ul>
-      </li>
+      </li> -->
+
+      <ng-container *ngFor="let menu of menus">
+        <li *ngIf="menu.subMenus && menu.subMenus.length > 0" nz-submenu nzTitle="{{menu.name}}" nzIcon="dashboard">
+            <ul>
+                <li nz-menu-item nzMatchRouter *ngFor="let subMenu of menu.subMenus" >
+                    <a>{{subMenu.name}}</a>
+                  </li>
+            </ul>
+        </li>
+        <li *ngIf="!menu.subMenus || menu.subMenus.length == 0" nz-menu-item nzMatchRouter nzIcon="dashboard">
+            <a>{{menu.name}}</a>
+        </li>
+      </ng-container>
     </ul>
   </nz-sider>
   <nz-layout>
