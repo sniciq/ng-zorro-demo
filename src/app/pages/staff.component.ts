@@ -4,6 +4,11 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 @Component({
     selector: 'comp-staff',
     styles: [`
+        .search-form {
+            border: 1px dashed #e9e9e9;
+            background-color: #fafafa;
+            padding: 6px 16px;
+        }
         .search-result-list {
             margin-top: 16px;
             border: 1px dashed #e9e9e9;
@@ -24,7 +29,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
         }
     `],
     template: `
-        <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+        <form class="search-form" nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
             <div nz-row [nzGutter]="24">
                 <div nz-col [nzSpan]="8">
                     <nz-form-item nzFlex>
@@ -69,13 +74,61 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
             </div>
         </form>
         <div class="search-result-list">
-            Search Result List
+            <nz-table 
+                #basicTable 
+                nzShowPagination
+                nzShowSizeChanger
+                (nzCurrentPageDataChange)="currentPageDataChange($event)"
+                [nzData]="listOfData"
+            >
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Address</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let data of basicTable.data">
+                    <td>{{ data.name }}</td>
+                    <td>{{ data.age }}</td>
+                    <td>{{ data.address }}</td>
+                    <td>
+                    <a>Action 一 {{ data.name }}</a>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <a>Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+            </nz-table>
         </div>
     `
 })
 
 export class StaffComponent implements OnInit {
     validateForm: FormGroup;
+
+    listOfData = [
+        {
+          key: '1',
+          name: 'John Brown',
+          age: 32,
+          address: 'New York No. 1 Lake Park'
+        },
+        {
+          key: '2',
+          name: 'Jim Green',
+          age: 42,
+          address: 'London No. 1 Lake Park'
+        },
+        {
+          key: '3',
+          name: 'Joe Black',
+          age: 32,
+          address: 'Sidney No. 1 Lake Park'
+        }
+      ];
 
     constructor(private fb: FormBuilder) {}
 
@@ -100,6 +153,11 @@ export class StaffComponent implements OnInit {
           this.validateForm.controls[i].markAsDirty();
           this.validateForm.controls[i].updateValueAndValidity();
         }
+    }
+
+    currentPageDataChange($event: any[]): void {
+        this.listOfData = $event;
+        // this.refreshStatus();
     }
     
 
