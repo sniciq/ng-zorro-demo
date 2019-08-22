@@ -2,7 +2,8 @@ const PROXY_CONFIG = [
     {
         context: [
             "/sys/menus",
-            "/sys/route"
+            "/sys/route",
+            "/admin/StaffCtrl/search"
         ],
         target: "http://localhost:7001",
         secure: false

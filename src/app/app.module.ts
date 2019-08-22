@@ -17,6 +17,7 @@ import { UtilService } from './service/util.service';
 
 import { DashboardComponent } from './pages/dashboard.component';
 import { StaffComponent } from './pages/staff.component';
+import { StaffService } from './service/module/staff.service';
 
 registerLocaleData(zh);
 
@@ -35,7 +36,9 @@ registerLocaleData(zh);
     BrowserAnimationsModule,
     NzIconModule,NzDatePickerModule
   ],
-  providers: [{ provide: NZ_I18N, useValue: zh_CN }, SysService, UtilService],
+  providers: [{ provide: NZ_I18N, useValue: zh_CN }, 
+    SysService, UtilService,StaffService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
