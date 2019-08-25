@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { StaffService } from '../service/module/staff.service';
+import { UtilService } from '../service/util.service';
+import * as moment from 'moment';
+
 @Component({
     selector: 'comp-staff',
     styles: [`
@@ -24,12 +27,45 @@ import { StaffService } from '../service/module/staff.service';
         nz-form-item {
             margin-bottom: 8px;
         }
-        nz-form-control {
+        .search-form nz-form-control {
             width:100%;
         }
     `],
     template: `
-        <form class="search-form" nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+        <nz-modal
+            [(nzVisible)]="showModal"
+            nzTitle="Modal Title"
+            nzWidth="700"
+            (nzOnCancel)="modalCancel()"
+            (nzOnOk)="onSave()"
+            [nzCancelLoading]="modalOkLoading"
+            [nzOkLoading]="modalOkLoading"
+        >
+        <nz-spin [nzSpinning]="modalOkLoading">
+            <form nz-form [formGroup]="editForm">
+                <input type="hidden" formControlName="id" id="id" />
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">name</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="必填!">
+                        <input nz-input formControlName="name" id="name" />
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="age">age</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="必填!">
+                        <input nz-input formControlName="age" id="age" />
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="birthday">birthday</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="必填!">
+                        <nz-date-picker formControlName="birthday"></nz-date-picker>
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+        </nz-spin>
+        </nz-modal>
+        <form class="search-form" nz-form [formGroup]="searchForm" (ngSubmit)="onSearch()">
             <div nz-row [nzGutter]="24">
                 <div nz-col [nzSpan]="8">
                     <nz-form-item nzFlex>
@@ -67,8 +103,9 @@ import { StaffService } from '../service/module/staff.service';
                 </div>
                 <div nz-col [nzSpan]="16" >
                     <div nz-row nzType="flex" nzJustify="end">
-                        <button nz-button [nzType]="'primary'">Search</button>
-                        <button nz-button (click)="resetForm()">Clear</button>
+                        <button nz-button [nzType]="'primary'" (click)="add()">新增</button>
+                        <button nz-button [nzType]="'primary'">查询</button>
+                        <button nz-button (click)="resetForm()">清空</button>
                     </div>
                 </div>
             </div>
@@ -91,7 +128,7 @@ import { StaffService } from '../service/module/staff.service';
                     <th nzShowSort nzSortKey="id">ID</th>
                     <th nzShowSort nzSortKey="name">Name</th>
                     <th>Age</th>
-                    <th>Address</th>
+                    <th>birthday</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -100,7 +137,7 @@ import { StaffService } from '../service/module/staff.service';
                     <td>{{ data.id }}</td>
                     <td>{{ data.name }}</td>
                     <td>{{ data.age }}</td>
-                    <td>{{ data.address }}</td>
+                    <td>{{ data.birthday }}</td>
                     <td>
                         <a>编辑</a>
                         <nz-divider nzType="vertical"></nz-divider>
@@ -114,7 +151,14 @@ import { StaffService } from '../service/module/staff.service';
 })
 
 export class StaffComponent implements OnInit {
-    validateForm: FormGroup;
+
+    //编辑
+    showModal = false;
+    modalOkLoading = false;
+    editForm: FormGroup;
+
+    //查询
+    searchForm: FormGroup;
     listOfData = [];
     loading = false;
     pagination = {
@@ -124,11 +168,18 @@ export class StaffComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private staffService: StaffService
+        private staffService: StaffService,
+        private utilService: UtilService
     ) {}
 
     ngOnInit(): void {
-        this.validateForm = this.fb.group({
+        this.editForm = this.fb.group({
+            id: [null, []],
+            name: [null, [Validators.required]],
+            age: [null, [Validators.required]],
+            birthday: [null, [Validators.required]],
+        });
+        this.searchForm = this.fb.group({
             id: [null, [Validators.required]],
             name: [null, []],
             age: [null, []],
@@ -137,17 +188,13 @@ export class StaffComponent implements OnInit {
         });
         this.searchData(true);
     }
-
-    onDateChange(result: Date): void {
-        console.log('onChange: ', result);
-    }
     resetForm(): void {
-        this.validateForm.reset();
+        this.searchForm.reset();
     }
-    submitForm(): void {
-        // for (const i in this.validateForm.controls) {
-        //   this.validateForm.controls[i].markAsDirty();
-        //   this.validateForm.controls[i].updateValueAndValidity();
+    onSearch(): void {
+        // for (const i in this.searchForm.controls) {
+        //   this.searchForm.controls[i].markAsDirty();
+        //   this.searchForm.controls[i].updateValueAndValidity();
         // }
         this.searchData(true);
     }
@@ -168,12 +215,62 @@ export class StaffComponent implements OnInit {
 
 
         //日期格式，utc
+        var data = Object.assign({}, this.searchForm.value)
+        for(var p in data) {
+            if(data[p] instanceof Date) {
+                var d = moment(data[p]).format('YYYY-MM-DD');
+                data[p] = d;
+            }
+        }
 
         this.loading = true;
-        this.staffService.search({data: this.validateForm.value, extLimit:this.pagination, }).subscribe(data => {
+        this.staffService.search({data: data, extLimit:this.pagination, }).subscribe(data => {
             this.listOfData = data.data;
             this.pagination.total = data.total;
             this.loading = false;
         })
+    }
+    add(): void {
+        this.showModal = true;
+    }
+    modalCancel(): void {
+        this.showModal = false;
+        this.editForm.reset();
+    }
+    onSave(): void {
+        for (const i in this.editForm.controls) {
+          this.editForm.controls[i].markAsDirty();
+          this.editForm.controls[i].updateValueAndValidity();
+        }
+
+        if(!this.editForm.valid) {
+            return;
+        }
+
+        console.log(this.editForm.value)
+        this.modalOkLoading = true;
+
+        //日期格式，utc
+        var data = Object.assign({}, this.editForm.value)
+        for(var p in data) {
+            if(data[p] instanceof Date) {
+                var d = moment(data[p]).format('YYYY-MM-DD');
+                data[p] = d;
+            }
+        }
+
+        this.staffService.save(data).subscribe(data => {
+            this.modalOkLoading = false;
+            if(!data.success) {
+                this.utilService.notice('error', '提示',data.info);
+                return;
+            }
+            else {
+                this.utilService.notice('success', '提示', '操作成功！');
+                this.showModal = false;
+                this.searchData();
+            }
+        });
+
     }
 }

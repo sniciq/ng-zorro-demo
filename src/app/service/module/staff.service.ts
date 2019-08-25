@@ -11,4 +11,8 @@ export class StaffService {
     search(param: any) {
         return this.httpClient.post<JsonResult<any[]>>("/admin/StaffCtrl/search", param);
     }
+
+    save(param: any) {
+        return this.httpClient.post<JsonResult<any[]>>("/admin/StaffCtrl/save", param);
+    }
 }
