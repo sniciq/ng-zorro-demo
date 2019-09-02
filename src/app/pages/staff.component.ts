@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { StaffService } from '../service/module/staff.service';
 import { UtilService } from '../service/util.service';
 import * as moment from 'moment';
@@ -97,7 +98,7 @@ import * as moment from 'moment';
                     <nz-form-item nzFlex>
                         <nz-form-label >生日</nz-form-label>
                         <nz-form-control>
-                            <nz-date-picker formControlName="birthday" (ngModelChange)="onDateChange($event)"></nz-date-picker>
+                            <nz-date-picker formControlName="birthday"></nz-date-picker>
                         </nz-form-control>
                     </nz-form-item>
                 </div>
@@ -139,9 +140,9 @@ import * as moment from 'moment';
                     <td>{{ data.age }}</td>
                     <td>{{ data.birthday }}</td>
                     <td>
-                        <a>编辑</a>
+                        <a (click)="onEdit(data.id)">编辑</a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a>删除</a>
+                        <a (click)="onDelete(data)">删除</a>
                     </td>
                 </tr>
                 </tbody>
@@ -156,6 +157,7 @@ export class StaffComponent implements OnInit {
     showModal = false;
     modalOkLoading = false;
     editForm: FormGroup;
+    confirmModal: NzModalRef;
 
     //查询
     searchForm: FormGroup;
@@ -169,7 +171,8 @@ export class StaffComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private staffService: StaffService,
-        private utilService: UtilService
+        private utilService: UtilService,
+        private modal: NzModalService
     ) {}
 
     ngOnInit(): void {
@@ -231,11 +234,39 @@ export class StaffComponent implements OnInit {
         })
     }
     add(): void {
+        this.editForm.reset();
         this.showModal = true;
     }
     modalCancel(): void {
         this.showModal = false;
         this.editForm.reset();
+    }
+    onEdit(id: number): void {
+        this.staffService.getDetailInfo(id).subscribe(data => {
+            if(!data.success) {
+                this.utilService.notice('error', '提示', data.info);
+                return;
+            }
+
+            this.editForm.reset();
+            this.editForm.patchValue(data.data);
+            this.showModal = true;
+        })
+    }
+    onDelete(data: Object): void {
+        this.confirmModal = this.modal.confirm({
+            nzTitle: '确认',
+            nzContent: '确认删除记录【' + data['id'] + '】?',
+            nzOnOk: () => this.staffService.delete(data['id']).subscribe(data => {
+                if(!data.success) {
+                    this.utilService.notice('error', '提示', data.info);
+                }
+                else {
+                    this.utilService.notice('success', '提示', '操作成功！');
+                    this.searchData();
+                }
+            })
+        });
     }
     onSave(): void {
         for (const i in this.editForm.controls) {
@@ -247,7 +278,6 @@ export class StaffComponent implements OnInit {
             return;
         }
 
-        console.log(this.editForm.value)
         this.modalOkLoading = true;
 
         //日期格式，utc
