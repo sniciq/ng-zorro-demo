@@ -12,19 +12,22 @@
       </a>
     </div>
     <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-menu-item>
-          <a routerLink=""><i nz-icon [nzType]="'dashboard'"></i>首页</a>
+      <li nz-menu-item nzMatchRouter routerLink="/home" nz-tooltip nzPlacement="right" [nzTitle]="isCollapsed ? '首页' : ''" nzSelected>
+        <i nz-icon nzType="dashboard"></i>
+        <span>首页</span>
       </li>
       <ng-container *ngFor="let menu of menus">
-        <li *ngIf="menu.subMenus && menu.subMenus.length > 0" nz-submenu nzTitle="{{menu.name}}" nzIcon="form">
+        <li *ngIf="menu.subMenus && menu.subMenus.length > 0" nz-submenu nzTitle="{{menu.name}}" nzIcon="folder">
             <ul>
-                <li nz-menu-item nzMatchRouter *ngFor="let subMenu of menu.subMenus" >
-                    <a routerLink="{{subMenu.path}}">{{subMenu.name}}</a>
+                <li nz-menu-item  *ngFor="let subMenu of menu.subMenus" nzMatchRouter [routerLink]="subMenu.path" >
+                    <i nz-icon nzType="file"></i>
+                    <span>{{subMenu.name}}</span>
                   </li>
             </ul>
         </li>
-        <li *ngIf="!menu.subMenus || menu.subMenus.length == 0" nz-menu-item nzMatchRouter nzIcon="dashboard">
-            <a routerLink="{{menu.path}}">{{menu.name}}</a>
+        <li *ngIf="!menu.subMenus || menu.subMenus.length == 0" nz-menu-item nzMatchRouter [routerLink]="menu.path"  nz-tooltip nzPlacement="right" [nzTitle]="isCollapsed ? menu.name : ''">
+            <i nz-icon nzType="file"></i>
+            <span>{{menu.name}}</span>
         </li>
       </ng-container>
     </ul>
@@ -38,6 +41,12 @@
                [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
             ></i>
         </span>
+
+        <span class="header-trigger" >
+            <i class="trigger" nz-icon [nzType]="'menu-unfold'"></i>
+        </span>
+
+
       </div>
     </nz-header>
     <nz-content>

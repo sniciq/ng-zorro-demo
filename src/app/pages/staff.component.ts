@@ -8,20 +8,6 @@ import * as moment from 'moment';
 @Component({
     selector: 'comp-staff',
     styles: [`
-        .search-form {
-            border: 1px solid #fafafa;
-            background-color: #fafafa;
-            padding: 6px 16px;
-        }
-        .search-result-list {
-            margin-top: 16px;
-            // border: 1px dashed #e9e9e9;
-            border-radius: 6px;
-            background-color: #fafafa;
-            min-height: 50px;
-            text-align: center;
-            padding-top: 0px;
-        }
         button {
             margin-left: 8px;
         }

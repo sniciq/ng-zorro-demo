@@ -10,7 +10,7 @@
 }
 
 .app-body {
-  background: #eaeaea;
+  background: #eeeeee;
 }
 
 .menu-sidebar {
@@ -80,6 +80,7 @@ nz-content {
 }
 
 .inner-content {
-  padding: 12px;
-  background: #fff;
+  /* padding: 12px; */
+  /* background: #eeeeee; */
 }
+
