@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { SysService } from './service/sys.service';
 import { Menu } from './vo/menu';
+import { User } from './vo/user';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -8,15 +11,21 @@ import { Menu } from './vo/menu';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-
-  constructor(
-    private sysService: SysService
-  ) {}
-
   isCollapsed = false;
   menus: Menu[];
+  confirmModal: NzModalRef;
+  currentUser: User;
 
+  constructor(
+    private sysService: SysService,
+    private modal: NzModalService,
+    private router: Router
+  ) {
 
+    this.sysService.currentUser.subscribe(x => {
+      this.currentUser = x;
+    });
+  }
 
   ngOnInit(): void {
     this.sysService.getMenu().subscribe(data => {
@@ -24,4 +33,14 @@ export class AppComponent implements OnInit {
     });
   }
 
+  logout(): void {
+    this.confirmModal = this.modal.confirm({
+      nzTitle: '确认',
+      nzContent: '确认退出?',
+      nzOnOk: () => {
+          this.sysService.logout();
+          this.router.navigate(['login']);
+      }
+    });
+  }
 }
