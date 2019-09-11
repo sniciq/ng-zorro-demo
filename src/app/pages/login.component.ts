@@ -79,7 +79,7 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['home']);
         },error => {
             this.loading = false;
-            console.log('error')
+            console.log(error)
         });
     }
 }

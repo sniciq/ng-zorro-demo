@@ -24,13 +24,18 @@ export class AppComponent implements OnInit {
 
     this.sysService.currentUser.subscribe(x => {
       this.currentUser = x;
+      if(!x) {
+        return;
+      }
+      this.router.navigate(['/home']);
+      this.sysService.getMenu().subscribe(data => {
+        this.menus = data;
+      });
     });
   }
 
   ngOnInit(): void {
-    this.sysService.getMenu().subscribe(data => {
-      this.menus = data;
-    });
+    this.sysService.getUserInfo();
   }
 
   logout(): void {

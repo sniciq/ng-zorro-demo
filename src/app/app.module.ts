@@ -19,12 +19,13 @@ import { DashboardComponent } from './pages/dashboard.component';
 import { StaffComponent } from './pages/staff.component';
 import { StaffService } from './service/module/staff.service';
 import { LoginComponent } from './pages/login.component';
+import { NotFoundComponent } from './pages/notfound.component';
 
 registerLocaleData(zh);
 
 @NgModule({
   declarations: [
-    AppComponent,DashboardComponent,StaffComponent,LoginComponent
+    AppComponent,DashboardComponent,StaffComponent,LoginComponent,NotFoundComponent
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,9 @@
 const PROXY_CONFIG = [
     {
         context: [
+            "/sys/login",
+            "/sys/logout",
+            "/sys/userInfo",
             "/sys/menus",
             "/sys/route",
             "/admin/StaffCtrl/search",

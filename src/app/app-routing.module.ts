@@ -4,14 +4,15 @@ import { Routes, RouterModule } from '@angular/router';
 import { StaffComponent } from './pages/staff.component';
 import { LoginComponent } from './pages/login.component';
 import { DashboardComponent } from './pages/dashboard.component';
-
+import { NotFoundComponent } from './pages/notfound.component';
 import { AuthGuard } from './service/auth.guard';
 
 const routes: Routes = [
   { path: 'login', pathMatch: 'full', component: LoginComponent },
   { path: 'home', pathMatch: 'full', component: DashboardComponent, canActivate: [AuthGuard]},
   { path: 'admin/staff', pathMatch: 'full', component: StaffComponent , canActivate: [AuthGuard]},
-  { path: 'welcome', loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomeModule) }
+  { path: 'welcome', loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomeModule) },
+  { path: '**', pathMatch: 'full', component: NotFoundComponent , canActivate: [AuthGuard] }
 ];
 
 @NgModule({

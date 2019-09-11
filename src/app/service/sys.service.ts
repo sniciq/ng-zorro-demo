@@ -14,7 +14,7 @@ export class SysService {
     constructor(
         private httpClient: HttpClient
     ) {
-        this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
+        this.currentUserSubject = new BehaviorSubject<User>(null);
         this.currentUser = this.currentUserSubject.asObservable();
     }
 
@@ -22,26 +22,36 @@ export class SysService {
         return this.currentUserSubject.value;
     }
 
+    getUserInfo() {
+        this.httpClient.get<JsonResult<string>>("/sys/userInfo").subscribe(data => {
+            if(data.success) {
+                const user = new User();
+                user.username = data.data;
+                this.currentUserSubject.next(user);
+            }
+            else {
+                throw new Error("用户名或者密码错误！");
+            }
+        })
+    }
+
     getMenu() {
-        // return this.httpClient.get<JsonResult<Menu[]>>("/sys/menus");
         return this.httpClient.get<Menu[]>("/sys/menus");
     }
 
     login(username: string, password: string) {
-        return this.httpClient.get<Menu[]>("/sys/menus").pipe(map(data => {
-            var user = new User();
-            user.id = 1;
-            user.username = 'hello';
-            if (user) {
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                this.currentUserSubject.next(user);
+        return this.httpClient.post<JsonResult<any[]>>("/sys/login", {username:username,password:password}).pipe(map(data => {
+            if(data.success) {
+                return this.getUserInfo();
             }
-
-            return user;
-        }));
+            else {
+                throw new Error("用户名或者密码错误！");
+            }
+        }))
     }
     logout() {
-        localStorage.removeItem('currentUser');
-        this.currentUserSubject.next(null);
+        this.httpClient.get<JsonResult<any>>("/sys/logout").subscribe(data => {
+            this.currentUserSubject.next(null);
+        });
     }
 }
