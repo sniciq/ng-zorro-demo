@@ -11,7 +11,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { registerLocaleData } from '@angular/common';
 import zh from '@angular/common/locales/zh';
-
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { SysHttpInterceptor } from './intercepetor/http-interceptor';
 import { SysService } from './service/sys.service';
 import { UtilService } from './service/util.service';
 
@@ -39,7 +40,8 @@ registerLocaleData(zh);
     NzIconModule,NzDatePickerModule
   ],
   providers: [{ provide: NZ_I18N, useValue: zh_CN }, 
-    SysService, UtilService,StaffService
+    SysService, UtilService,StaffService,
+    {provide: HTTP_INTERCEPTORS, useClass: SysHttpInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]
 })

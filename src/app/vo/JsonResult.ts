@@ -3,4 +3,5 @@ export class JsonResult<T> {
     success: boolean;
     info?: string;
     total?: number;
+    result?: string;
 }
